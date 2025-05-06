@@ -1,2 +1,4 @@
+import os,  sys
+
 print("hello world!")
-print("/Users/xingzhihe/test.py")
+print("当前路径：" + os.getcwd())
