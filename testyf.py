@@ -342,15 +342,24 @@ class DualMovingAverageStrategy(bt.Strategy):
                             }
                             self.trades.append(trade_info)
                             # 打印交易信息
-                            print("{:<8} {:<12} {:<6} {:<10.2f} {:<8d} {:<12.2f} {:<14.2f}".format(
-                                data_name._name if hasattr(data_name, '_name') else data_name,
-                                self.datas[0].datetime.datetime(0).strftime("%Y-%m-%d"),
-                                "卖出",
-                                data.close[0],
-                                reduce_size,
-                                data.close[0] * reduce_size,
-                                self.broker.get_cash()
-                            ))
+                            # print("{:<8} {:<12} {:<6} {:<10.2f} {:<8d} {:<12.2f} {:<14.2f}".format(
+                            #     data_name._name if hasattr(data_name, '_name') else data_name,
+                            #     self.datas[0].datetime.datetime(0).strftime("%Y-%m-%d"),
+                            #     "卖出",
+                            #     data.close[0],
+                            #     reduce_size,
+                            #     data.close[0] * reduce_size,
+                            #     self.broker.get_cash()
+                            # ))
+                            BacktestPrinter.print_order_info(
+                                symbol=data_name._name if hasattr(data_name, '_name') else data_name,
+                                date=self.datas[0].datetime.datetime(0),
+                                action="卖出",
+                                price=data.close[0],
+                                size=reduce_size,
+                                total_cost=data.close[0] * reduce_size,
+                                remaining_cash=self.broker.get_cash()
+                            )
             
             # 2. 单一标的持仓上限控制
             position_value = pos.size * data.close[0]
@@ -375,15 +384,24 @@ class DualMovingAverageStrategy(bt.Strategy):
                         }
                         self.trades.append(trade_info)
                         # 打印交易信息
-                        print("{:<8} {:<12} {:<6} {:<10.2f} {:<8d} {:<12.2f} {:<14.2f}".format(
-                            data_name._name if hasattr(data_name, '_name') else data_name,
-                            self.datas[0].datetime.datetime(0).strftime("%Y-%m-%d"),
-                            "卖出",
-                            data.close[0],
-                            reduce_size,
-                            data.close[0] * reduce_size,
-                            self.broker.get_cash()
-                        ))
+                        # print("{:<8} {:<12} {:<6} {:<10.2f} {:<8d} {:<12.2f} {:<14.2f}".format(
+                        #     data_name._name if hasattr(data_name, '_name') else data_name,
+                        #     self.datas[0].datetime.datetime(0).strftime("%Y-%m-%d"),
+                        #     "卖出",
+                        #     data.close[0],
+                        #     reduce_size,
+                        #     data.close[0] * reduce_size,
+                        #     self.broker.get_cash()
+                        # ))
+                        BacktestPrinter.print_order_info(
+                            symbol=data_name._name if hasattr(data_name, '_name') else data_name,
+                            date=self.datas[0].datetime.datetime(0),
+                            action="卖出",
+                            price=data.close[0],
+                            size=reduce_size,
+                            total_cost=data.close[0] * reduce_size,
+                            remaining_cash=self.broker.get_cash()
+                        )
 
     def _calculate_current_allocation(self):
         """实时资产配置计算"""
@@ -445,7 +463,17 @@ class DualMovingAverageStrategy(bt.Strategy):
                         if size_change > 0:
                             order = self.buy(data=data, size=size_change)
                             if order:
-                                print("{:<8} {:<12} {:<6} {:<10.2f} {:<8d} {:<12.2f} {:<14.2f}".format(symbol, self.datas[0].datetime.datetime(0).strftime("%Y-%m-%d"), "买入", data.close[0], size_change, data.close[0] * size_change, self.broker.get_cash()))
+                                # 打印交易信息
+                                #print("{:<8} {:<12} {:<6} {:<10.2f} {:<8d} {:<12.2f} {:<14.2f}".format(symbol, self.datas[0].datetime.datetime(0).strftime("%Y-%m-%d"), "买入", data.close[0], size_change, data.close[0] * size_change, self.broker.get_cash()))
+                                BacktestPrinter.print_order_info(
+                                        symbol=symbol,
+                                        date=self.datas[0].datetime.datetime(0),
+                                        action="买入",
+                                        price=data.close[0],
+                                        size=size_change,
+                                        total_cost=data.close[0] * size_change,
+                                        remaining_cash=self.broker.get_cash()
+                                    )
                         elif size_change < 0:
                             # 计算交易成本
                             commission_cost = abs(size_change) * data.close[0] * self.p.commission
@@ -456,7 +484,17 @@ class DualMovingAverageStrategy(bt.Strategy):
                             if order:
                                 self.broker.add_cash(-total_cost)
                             if order:
-                                print("{:<8} {:<12} {:<6} {:<10.2f} {:<8d} {:<12.2f} {:<14.2f}".format(symbol, self.datas[0].datetime.datetime(0).strftime("%Y-%m-%d"), "卖出", data.close[0], abs(size_change), data.close[0] * abs(size_change), self.broker.get_cash()))
+                                # print("{:<8} {:<12} {:<6} {:<10.2f} {:<8d} {:<12.2f} {:<14.2f}".format(symbol, self.datas[0].datetime.datetime(0).strftime("%Y-%m-%d"), "卖出", data.close[0], abs(size_change), data.close[0] * abs(size_change), self.broker.get_cash()))
+                                # 打印交易信息
+                                BacktestPrinter.print_order_info(
+                                    symbol=symbol,
+                                    date=self.datas[0].datetime.datetime(0),
+                                    action="卖出",
+                                    price=data.close[0],
+                                    size=abs(size_change),
+                                    total_cost=data.close[0] * abs(size_change),
+                                    remaining_cash=self.broker.get_cash()
+                                )
                     except Exception as e:
                         print(f"再平衡{symbol}时发生错误: {e}")
                         continue

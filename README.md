@@ -39,4 +39,7 @@ CREATE TABLE IF NOT EXISTS demo.`order`
 INSERT INTO `order`(`symbol`, `date`, `action`, `price`, `size`, `total_cost`, `remaining_cash`) 
 VALUES ('HK', '2025-05-15', 'in', '1688.5675', '94533434', '3545657567', '867967.258');
 
-select * from demo.`order` where symbol = 'HK';
+
+select symbol, action, count(0) from demo.`order` group by symbol, action;
+
+truncate table demo.`order`;

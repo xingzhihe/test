@@ -3,6 +3,8 @@ from datetime import datetime
 from typing import Dict, List, Any
 import numpy as np
 
+from dbutils import DBUtil
+
 class BacktestPrinter:
     """
     回测打印工具类
@@ -13,7 +15,8 @@ class BacktestPrinter:
     3. 资产配置信息打印
     4. 回测结果统计打印
     """
-    
+    db_util = DBUtil()
+
     @staticmethod
     def print_order_info(symbol: str, date: datetime, action: str, price: float, 
                         size: int, total_cost: float, remaining_cash: float) -> None:
@@ -38,6 +41,9 @@ class BacktestPrinter:
             total_cost,
             remaining_cash
         ))
+
+        sql = f"INSERT INTO `order`(`symbol`, `date`, `action`, `price`, `size`, `total_cost`, `remaining_cash`) VALUES ('{symbol}', '{date.strftime("%Y-%m-%d")}', '{'in' if action=="买入" else 'out'}', '{price:.2f}', '{size}', '{total_cost:.2f}', '{remaining_cash:.2f}')"
+        BacktestPrinter.db_util.save(sql)
     
     @staticmethod
     def print_order_header() -> None:
