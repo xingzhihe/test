@@ -13,7 +13,7 @@ if __name__ == '__main__':
     print("get_one执行结果：" + str(dbUtil.get_one(sql)))
 
     # 列表查询
-    sql = "select * from `order`"
+    sql = "select * from `order` order by create_time desc limit 1"
     print("get_all执行结果：" + str(dbUtil.get_all(sql)))
 
     # 插入
@@ -22,7 +22,7 @@ if __name__ == '__main__':
     print("save执行结果：" + str(dbUtil.save(sql)))
 
     # 列表查询
-    sql = "select * from `order`"
+    sql = "select * from `order` order by create_time desc limit 1"
     print("get_all执行结果：" + str(dbUtil.get_all(sql)))
 
     # 更新
@@ -30,7 +30,7 @@ if __name__ == '__main__':
     print("update执行结果：" + str(dbUtil.update(sql)))
 
     # 列表查询
-    sql = "select * from `order`"
+    sql = "select * from `order` order by create_time desc limit 1"
     print("get_all执行结果：" + str(dbUtil.get_all(sql)))
 
     # 删除
@@ -38,5 +38,5 @@ if __name__ == '__main__':
     print("delete执行结果：" + str(dbUtil.delete(sql)))
 
     # 列表查询
-    sql = "select * from `order`"
+    sql = "select * from `order` order by create_time desc limit 1"
     print("get_all执行结果：" + str(dbUtil.get_all(sql)))
