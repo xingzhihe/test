@@ -2,7 +2,9 @@ import backtrader as bt
 import pandas as pd
 import akshare as ak
 import numpy as np
+
 from utils import BacktestPrinter
+from order_manager import OrderManager
 
 class DualMovingAverageStrategy(bt.Strategy):
     """
@@ -199,7 +201,8 @@ class DualMovingAverageStrategy(bt.Strategy):
                                     total_value -= (price * size)
                                         
                                     # 打印交易信息
-                                    BacktestPrinter.print_order_info(
+                                    # BacktestPrinter.print_order_info(
+                                    OrderManager.save(
                                         symbol=symbol,
                                         date=earliest_date,
                                         action="买入",
@@ -351,7 +354,7 @@ class DualMovingAverageStrategy(bt.Strategy):
                             #     data.close[0] * reduce_size,
                             #     self.broker.get_cash()
                             # ))
-                            BacktestPrinter.print_order_info(
+                            OrderManager.save(
                                 symbol=data_name._name if hasattr(data_name, '_name') else data_name,
                                 date=self.datas[0].datetime.datetime(0),
                                 action="卖出",
@@ -393,7 +396,7 @@ class DualMovingAverageStrategy(bt.Strategy):
                         #     data.close[0] * reduce_size,
                         #     self.broker.get_cash()
                         # ))
-                        BacktestPrinter.print_order_info(
+                        OrderManager.save(
                             symbol=data_name._name if hasattr(data_name, '_name') else data_name,
                             date=self.datas[0].datetime.datetime(0),
                             action="卖出",
@@ -465,7 +468,7 @@ class DualMovingAverageStrategy(bt.Strategy):
                             if order:
                                 # 打印交易信息
                                 #print("{:<8} {:<12} {:<6} {:<10.2f} {:<8d} {:<12.2f} {:<14.2f}".format(symbol, self.datas[0].datetime.datetime(0).strftime("%Y-%m-%d"), "买入", data.close[0], size_change, data.close[0] * size_change, self.broker.get_cash()))
-                                BacktestPrinter.print_order_info(
+                                OrderManager.save(
                                         symbol=symbol,
                                         date=self.datas[0].datetime.datetime(0),
                                         action="买入",
@@ -486,7 +489,7 @@ class DualMovingAverageStrategy(bt.Strategy):
                             if order:
                                 # print("{:<8} {:<12} {:<6} {:<10.2f} {:<8d} {:<12.2f} {:<14.2f}".format(symbol, self.datas[0].datetime.datetime(0).strftime("%Y-%m-%d"), "卖出", data.close[0], abs(size_change), data.close[0] * abs(size_change), self.broker.get_cash()))
                                 # 打印交易信息
-                                BacktestPrinter.print_order_info(
+                                OrderManager.save(
                                     symbol=symbol,
                                     date=self.datas[0].datetime.datetime(0),
                                     action="卖出",
