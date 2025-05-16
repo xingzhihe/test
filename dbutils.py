@@ -46,22 +46,40 @@ class PageResult:
         # 总页数
         self.pages = (records - 1) // self.page_size + 1 if records > 0 else 0
         
+        if records == 0:
+            self.page = 0
+        
         # 分页结束
         self.eop = self.page == self.pages
 
+
 class DBUtil:
     """MySQL 工具类"""
+    _instance = None
+    
     db = None
     cursor = None
 
+    def __new__(cls, *args, **kwargs):
+        if not cls._instance:
+            cls._instance = super(DBUtil, cls).__new__(cls, *args, **kwargs)
+
+        return cls._instance
+
     def __init__(self):
-        self.host = mysql_config['host']
-        self.port = mysql_config['port']
-        self.userName = mysql_config['userName']
-        self.password = mysql_config['password']
-        self.dbName = mysql_config['dbName']
-        #self.charsets = mysql_config['charsets']
-        print("配置文件：" + json.dumps(mysql_config))
+        if not hasattr(self, 'initialized'):
+            self.initialized = True
+            self.host = mysql_config['host']
+            self.port = mysql_config['port']
+            self.userName = mysql_config['userName']
+            self.password = mysql_config['password']
+            self.dbName = mysql_config['dbName']
+            #self.charsets = mysql_config['charsets']
+            print("配置文件：" + json.dumps(mysql_config))
+    
+    @staticmethod
+    def INS():
+        return DBUtil()
 
     # 链接数据库
     def get_con(self):

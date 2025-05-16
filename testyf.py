@@ -4,8 +4,8 @@ import akshare as ak
 import numpy as np
 
 from utils import BacktestPrinter
-from order_manager import OrderManager
-from order_info import OrderInfo
+from order import OrderInfo, OrderManager
+from test_result import TestResult, TestResultManager
 
 class DualMovingAverageStrategy(bt.Strategy):
     """
@@ -281,7 +281,8 @@ class DualMovingAverageStrategy(bt.Strategy):
         - 对冲金额根据总资产动态调整
         """
         # 检查三重触发条件
-        print(f"回测日期:{self.datas[0].datetime.datetime(0).strftime('%Y-%m-%d')}; HSI.RSI:{self.hsi_rsi[0]}; SPX.RSI:{self.spx_rsi[0]}; VIX:{self.vix[0]}; AI情绪得分:{np.mean(list(self.sentiment_scores.values()))}; 资金余额:{self.broker.getvalue()}; 对冲比例:{self.p.max_hedge_ratio}; 对冲窗口:{self.p.rebalance_window}; AI情绪权重:{self.p.ai_news_weight}; 波动率限制:{self.p.volatility_limiter}; 最大持仓天数:{self.p.time_stop_loss}; 交易佣金率:{self.p.commission}; 滑点成本:{self.p.slippage}")
+        # print(f"回测日期:{self.datas[0].datetime.datetime(0).strftime('%Y-%m-%d')}; HSI.RSI:{self.hsi_rsi[0]}; SPX.RSI:{self.spx_rsi[0]}; VIX:{self.vix[0]}; AI情绪得分:{np.mean(list(self.sentiment_scores.values()))}; 资金余额:{self.broker.getvalue()}; 对冲比例:{self.p.max_hedge_ratio}; 对冲窗口:{self.p.rebalance_window}; AI情绪权重:{self.p.ai_news_weight}; 波动率限制:{self.p.volatility_limiter}; 最大持仓天数:{self.p.time_stop_loss}; 交易佣金率:{self.p.commission}; 滑点成本:{self.p.slippage}")
+        TestResultManager.save(TestResult(self.datas[0].datetime.datetime(0), self.hsi_rsi[0], self.spx_rsi[0], np.mean(list(self.sentiment_scores.values())), self.p.ai_news_weight, self.p.max_hedge_ratio, self.p.rebalance_window, self.p.volatility_limiter, self.vix[0], self.p.commission, self.p.slippage, self.p.time_stop_loss, self.broker.getvalue()))
         if (self.hsi_rsi < 30 or self.spx_rsi < 30) and \
             self.vix[0] > 25 and \
             np.mean(list(self.sentiment_scores.values())) < 0.4:  # 负面情绪主导
