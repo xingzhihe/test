@@ -64,18 +64,18 @@ class TestResultManager:
             result: 回测结果
         """
         print(f"回测日期:{result.date.strftime('%Y-%m-%d')}; \
-            HSI.RSI:{result.hsi_rsi}; \
-            SPX.RSI:{result.spx_rsi}; \
-            VIX:{result.vix}; \
-            AI情绪得分:{result.sentiment_scores}; \
-            资金余额:{result.remaining_cash}; \
-            对冲比例:{result.max_hedge_ratio}; \
-            对冲窗口:{result.rebalance_window}; \
-            AI情绪权重:{result.news_weight}; \
-            波动率限制:{result.volatility_limiter}; \
-            最大持仓天数:{result.day_stop_loss}; \
-            交易佣金率:{result.commission}; \
-            滑点成本:{result.slippage}")
+HSI.RSI:{result.hsi_rsi}; \
+SPX.RSI:{result.spx_rsi}; \
+VIX:{result.vix}; \
+AI情绪得分:{result.sentiment_scores}; \
+资金余额:{result.remaining_cash}; \
+对冲比例:{result.max_hedge_ratio}; \
+对冲窗口:{result.rebalance_window}; \
+AI情绪权重:{result.news_weight}; \
+波动率限制:{result.volatility_limiter}; \
+最大持仓天数:{result.day_stop_loss}; \
+交易佣金率:{result.commission}; \
+滑点成本:{result.slippage}")
 
         sql = f"INSERT INTO `test_result`(`date`, `hsi_rsi`, `spx_rsi`, `vix`, `volatility_limiter`, \
 `sentiment_scores`, `news_weight`, `max_hedge_ratio`, `rebalance_window`, `commission`, `slippage`, `day_stop_loss`, `remaining_cash`) VALUES (\
@@ -91,9 +91,8 @@ class TestResultManager:
 '{result.commission}', \
 '{result.slippage}', \
 '{result.day_stop_loss}', \
-'{result.remaining_cash:.2f}'\
-)"
-        print(sql)
+'{result.remaining_cash:.2f}')"
+        # print(sql)
         DBUtil.INS().save(sql)
 
     @staticmethod
