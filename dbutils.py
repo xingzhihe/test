@@ -3,13 +3,51 @@ import json
 import pymysql
 
 mysql_config = {
-    "host": "192.168.1.102",
+    "host": "192.168.1.100",
     "port": 4407,
     "userName": "test",
     "password": "test",
     "dbName": "demo",
     "charsets": "UTF8"
 }
+
+class PageResult:
+    """MySQL 分页查询结果"""
+
+    def __init__(self, page: int, page_size: int = 10):
+        # 当前页面，从1开始
+        self.page = page
+        
+        # 每页数据量， 默认显示10条
+        self.page_size = page_size
+        
+        # 分页结束
+        self.eop = False
+        
+        # 当前页数据
+        self.data = []
+        
+        # 总记录数
+        self.records = 0
+        
+        # 总页数
+        self.pages = 0
+        
+        # 分页结束
+        self.eop = False
+
+    def load_page_data(self, data: [], records: int):
+        # 当前页数据
+        self.data = data
+        
+        # 总记录数
+        self.records = records
+        
+        # 总页数
+        self.pages = (records - 1) // self.page_size + 1 if records > 0 else 0
+        
+        # 分页结束
+        self.eop = self.page == self.pages
 
 class DBUtil:
     """MySQL 工具类"""
@@ -55,16 +93,30 @@ class DBUtil:
         return res
 
     # 查询列表数据
-    def get_all(self, sql):
-        res = None
+    def get_all(self, sql, page: int, page_size: int = 10) -> PageResult:
+        result = PageResult(page, page_size)
         try:
+            fields = sql[len("select "):sql.lower().index(' from')]
+            sql_records = sql.replace(fields, "COUNT(1)")
+
+            offset = (page - 1) * page_size
+            sql = sql + f" limit {offset}, {page_size}"
+
             self.get_con()
-            self.cursor.execute(sql)
-            res = self.cursor.fetchall()
-            self.close()
+            self.cursor.execute(sql_records)
+            records = self.cursor.fetchone()[0]
+
+            if records > 0:
+                self.cursor.execute(sql)
+                data = self.cursor.fetchall()
+                self.close()
+            else:
+                data = []
+
+            result.load_page_data(data, records)
         except Exception as e:
             print("查询失败！" + str(e))
-        return res
+        return result
 
     # 插入数据
     def __insert(self, sql):
